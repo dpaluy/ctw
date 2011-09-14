@@ -23,6 +23,10 @@ public:
 
 	void collectP() { collectProbability = true; }
 	void dumpCollector();
+
+	void saveTree(const char * );
+	bool loadTree(const char * );
+
 private:
 	typedef boost::unordered_map<KEY_TYPE , TreeNode* > map;
 

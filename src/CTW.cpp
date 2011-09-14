@@ -7,6 +7,7 @@
 #include <boost/circular_buffer.hpp> // for XML output
 #include <stack>
 #include <string>
+#include <fstream> // File load/save
 
 using namespace ctw;
 
@@ -44,7 +45,9 @@ CTW::~CTW()
 void CTW::add(SIGNAL_TYPE signal, size_t action)
 {
 	if (signal >= NUMBER_OF_CHILDREN)
+	{
 		BOOST_THROW_EXCEPTION(CtwException("Illegal signal: " + boost::lexical_cast<std::string>(signal)));
+	}
 
 	size_t depth = 0;
 	NodeInfo* maxProbabilityNode = 0;
@@ -100,7 +103,34 @@ void CTW::add(SIGNAL_TYPE signal, size_t action)
 	}
 }
 
-#include <fstream>
+void CTW::saveTree(const char * filename)
+{
+//	std::ofstream myFile (filename, std::ios::out | std::ios::binary);
+//	size_t tree_size = sizeof tree;
+//	size_t context_size = sizeof context;
+//	myFile.write(reinterpret_cast<char*>(tree_size), sizeof tree_size);
+//	myFile.write(reinterpret_cast<char*>(context_size), sizeof context_size);
+//	myFile.write(tree, tree_size);
+//	myFile.write(context, context_size);
+//	myFile.close();
+}
+
+bool CTW::loadTree(const char * filename)
+{
+//	std::ifstream myFile (filename, std::ios::in | std::ios::binary);
+//	size_t tree_size;
+//	size_t context_size;
+//
+//	myFile.read(reinterpret_cast<char*> &tree_size, sizeof tree_size);
+//	myFile.read(reinterpret_cast<char*> &context_size, sizeof context_size);
+//
+//	myFile.read(reinterpret_cast<char*> &tree, tree_size);
+//	myFile.read(reinterpret_cast<char*> &context, context_size);
+//
+//	myFile.close();
+	return true;
+}
+
 void CTW::dumpCollector()
 {
 	std::ofstream myfile;
