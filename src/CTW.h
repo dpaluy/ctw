@@ -12,25 +12,9 @@
 namespace ctw {
 
 class CTW {
-public:
-	CTW();
-	CTW(const Context& );
-	virtual ~CTW();
 
-	void add(SIGNAL_TYPE , size_t );
-
-	void toXML(std::string filename);
-
-	void collectP() { collectProbability = true; }
-	void dumpCollector();
-
-	void saveTree(const char * );
-	bool loadTree(const char * );
-
-private:
-	typedef boost::unordered_map<KEY_TYPE , TreeNode* > map;
-
-	map tree;
+	typedef boost::unordered_map<KEY_TYPE , TreeNode* > umap;
+	umap tree;
 	Context context;
 
 	bool collectProbability;
@@ -43,7 +27,18 @@ private:
 	double calcChildrenPw(KEY_TYPE , size_t  );
     void node2XML(pugi::xml_node& , KEY_TYPE , KEY_TYPE , unsigned int );
 
+public:
 
+	CTW();
+	CTW(const Context& );
+	virtual ~CTW();
+
+	void add(SIGNAL_TYPE , size_t );
+
+	void toXML(std::string filename);
+
+	void collectP() { collectProbability = true; }
+	void dumpCollector();
 };
 
 }

@@ -34,7 +34,7 @@ CTW::CTW(const Context& initialContext)
 
 CTW::~CTW()
 {
-	BOOST_FOREACH(map::value_type node, tree)
+	BOOST_FOREACH(umap::value_type node, tree)
 	{
 		delete node.second;
 	}
@@ -103,45 +103,17 @@ void CTW::add(SIGNAL_TYPE signal, size_t action)
 	}
 }
 
-void CTW::saveTree(const char * filename)
-{
-//	std::ofstream myFile (filename, std::ios::out | std::ios::binary);
-//	size_t tree_size = sizeof tree;
-//	size_t context_size = sizeof context;
-//	myFile.write(reinterpret_cast<char*>(tree_size), sizeof tree_size);
-//	myFile.write(reinterpret_cast<char*>(context_size), sizeof context_size);
-//	myFile.write(tree, tree_size);
-//	myFile.write(context, context_size);
-//	myFile.close();
-}
-
-bool CTW::loadTree(const char * filename)
-{
-//	std::ifstream myFile (filename, std::ios::in | std::ios::binary);
-//	size_t tree_size;
-//	size_t context_size;
-//
-//	myFile.read(reinterpret_cast<char*> &tree_size, sizeof tree_size);
-//	myFile.read(reinterpret_cast<char*> &context_size, sizeof context_size);
-//
-//	myFile.read(reinterpret_cast<char*> &tree, tree_size);
-//	myFile.read(reinterpret_cast<char*> &context, context_size);
-//
-//	myFile.close();
-	return true;
-}
-
 void CTW::dumpCollector()
 {
 	std::ofstream myfile;
-	myfile.open ("collector.txt");
-	myfile << "NA\tBUY\tSELL\tDepth\n";
+	myfile.open ("collector.csv");
+	myfile << "NA,BUY,SELL,Depth\n";
 	BOOST_FOREACH( NodeInfo* node, collector)
 	{
 		TreeNode *treeNode = tree[node->key];
 		// depth,
-		myfile << treeNode->getRealP(NO_ACTION) << "\t"
-				<< treeNode->getRealP(BUY) << "\t" << treeNode->getRealP(SELL) << "\t" << node->depth << std::endl;
+		myfile << treeNode->getRealP(NO_ACTION) << ","
+				<< treeNode->getRealP(BUY) << "," << treeNode->getRealP(SELL) << "," << node->depth << std::endl;
 
 	}
 	myfile.close();
@@ -172,7 +144,7 @@ KEY_TYPE CTW::createNode(SIGNAL_TYPE child, KEY_TYPE parent)
 KEY_TYPE CTW::findNode(SIGNAL_TYPE child, KEY_TYPE parent)
 {
 	KEY_TYPE key = KEY(parent, child);
-	map::const_iterator node = tree.find(key);
+	umap::const_iterator node = tree.find(key);
 	if (node == tree.end())
 		return NULL_KEY; // NOT FOUND
 	else
@@ -201,6 +173,7 @@ void CTW::top_nodes(pugi::xml_node & graph_node)
 	}
 }
 
+// TODO: remove
 void CTW::path_nodes(pugi::xml_node& graph_node)
 {
     SIGNAL_TYPE arr[] = { 0, 0, 1, 1, 2,

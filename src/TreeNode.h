@@ -3,9 +3,19 @@
 
 #include "ctwtypes.h"
 #include "settings.h"
+
 namespace ctw {
 
 class TreeNode {
+	double calcPe(size_t action_index);
+
+	unsigned int cntSum();
+
+	SIGNAL_TYPE child_index;
+	KEY_TYPE parent_index;
+
+	unsigned int cnt[MAX_COUNTER_ENUM];
+	double P[MAX_COUNTER_ENUM];
 
 public:
 
@@ -23,18 +33,6 @@ public:
 	double getMaxP();
 
 	std::string toString();
-
-private:
-
-	double calcPe(size_t action_index);
-
-	unsigned int cntSum();
-
-	SIGNAL_TYPE child_index;
-	KEY_TYPE parent_index;
-
-	unsigned int cnt[MAX_COUNTER_ENUM];
-	double P[MAX_COUNTER_ENUM];
 };
 
 }
