@@ -16,6 +16,8 @@ class CTW {
 	typedef boost::unordered_map<KEY_TYPE , TreeNode* > umap;
 	umap tree;
 	Context context;
+	const unsigned int NUMBER_OF_CHILDREN;
+	const int MAX_NODES_2_XML;
 
 	bool collectProbability;
 	boost::circular_buffer_space_optimized<NodeInfo*> collector;
@@ -29,8 +31,8 @@ class CTW {
 
 public:
 
-	CTW();
-	CTW(const Context& );
+	CTW(int , unsigned int, int = 300);
+	CTW(const Context& , unsigned int, int = 300);
 	virtual ~CTW();
 
 	void add(SIGNAL_TYPE , size_t );

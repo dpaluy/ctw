@@ -1,5 +1,4 @@
 #include "CTW.h"
-#include "settings.h"
 #include "CtwException.h"
 
 #include <boost/foreach.hpp>
@@ -16,8 +15,12 @@ using namespace ctw;
 #define NULL_KEY ""
 #define KEY(parent, child) ((parent) + "321"+ boost::lexical_cast<std::string>(child))	// TODO: review pad
 
-CTW::CTW()
-	:context(CONTEXT_MAX_DEPTH), collectProbability(false), collector(2*CONTEXT_MAX_DEPTH)
+CTW::CTW(int tree_depth, unsigned int number_of_children, int max_nodes_2_xml)
+	:context(tree_depth),
+	 NUMBER_OF_CHILDREN(number_of_children),
+	 MAX_NODES_2_XML(max_nodes_2_xml),
+	 collectProbability(false),
+	 collector(2*tree_depth)
 {
 	TreeNode* root = new TreeNode(0, ROOT_PARENT);
 	SIGNAL_TYPE signal = 0;
@@ -25,8 +28,10 @@ CTW::CTW()
 	tree[ROOT_INDEX] = root;
 }
 
-CTW::CTW(const Context& initialContext)
-	:context(initialContext)
+CTW::CTW(const Context& initialContext, unsigned int number_of_children, int max_nodes_2_xml)
+	:context(initialContext),
+	 NUMBER_OF_CHILDREN(number_of_children),
+	 MAX_NODES_2_XML(max_nodes_2_xml)
 {
 	TreeNode* root = new TreeNode(0, ROOT_PARENT);
 	tree[ROOT_INDEX] = root;

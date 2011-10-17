@@ -2,7 +2,6 @@
 #define TREENODE_H_
 
 #include "ctwtypes.h"
-#include "settings.h"
 
 namespace ctw {
 
