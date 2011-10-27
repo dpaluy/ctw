@@ -7,7 +7,7 @@
 #include "xml/pugixml.hpp"
 #include <boost/unordered_map.hpp>
 #include <boost/circular_buffer.hpp>
-#include "NodeInfo.h"
+#include "ICollector.h"
 
 namespace ctw {
 
@@ -19,8 +19,7 @@ class CTW {
 	const unsigned int NUMBER_OF_CHILDREN;
 	const int MAX_NODES_2_XML;
 
-	bool collectProbability;
-	boost::circular_buffer_space_optimized<NodeInfo*> collector;
+	ICollector* collector;
 
     void top_nodes(pugi::xml_node&);
     void path_nodes(pugi::xml_node&);
@@ -31,16 +30,13 @@ class CTW {
 
 public:
 
-	CTW(int , unsigned int, int = 300);
-	CTW(const Context& , unsigned int, int = 300);
+	CTW(ICollector* , int , unsigned int, int = 300);
+	CTW(ICollector* , const Context& , unsigned int, int = 300);
 	virtual ~CTW();
 
 	void add(SIGNAL_TYPE , size_t );
 
 	void toXML(std::string filename);
-
-	void collectP() { collectProbability = true; }
-	void dumpCollector();
 };
 
 }

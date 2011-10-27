@@ -11,7 +11,7 @@ namespace ctw {
 		size_t depth;
 
 		NodeInfo()
-			:P(0)
+			:P(0), key("")
 		{}
 	};
 }

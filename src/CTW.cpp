@@ -1,5 +1,6 @@
 #include "CTW.h"
 #include "CtwException.h"
+#include "NodeInfo.h"
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
@@ -15,12 +16,11 @@ using namespace ctw;
 #define NULL_KEY ""
 #define KEY(parent, child) ((parent) + "321"+ boost::lexical_cast<std::string>(child))	// TODO: review pad
 
-CTW::CTW(int tree_depth, unsigned int number_of_children, int max_nodes_2_xml)
+CTW::CTW(ICollector* c, int tree_depth, unsigned int number_of_children, int max_nodes_2_xml)
 	:context(tree_depth),
 	 NUMBER_OF_CHILDREN(number_of_children),
 	 MAX_NODES_2_XML(max_nodes_2_xml),
-	 collectProbability(false),
-	 collector(2*tree_depth)
+	 collector(c)
 {
 	TreeNode* root = new TreeNode(0, ROOT_PARENT);
 	SIGNAL_TYPE signal = 0;
@@ -28,10 +28,11 @@ CTW::CTW(int tree_depth, unsigned int number_of_children, int max_nodes_2_xml)
 	tree[ROOT_INDEX] = root;
 }
 
-CTW::CTW(const Context& initialContext, unsigned int number_of_children, int max_nodes_2_xml)
+CTW::CTW(ICollector* c, const Context& initialContext, unsigned int number_of_children, int max_nodes_2_xml)
 	:context(initialContext),
 	 NUMBER_OF_CHILDREN(number_of_children),
-	 MAX_NODES_2_XML(max_nodes_2_xml)
+	 MAX_NODES_2_XML(max_nodes_2_xml),
+	 collector(c)
 {
 	TreeNode* root = new TreeNode(0, ROOT_PARENT);
 	tree[ROOT_INDEX] = root;
@@ -55,10 +56,7 @@ void CTW::add(SIGNAL_TYPE signal, size_t action)
 	}
 
 	size_t depth = 0;
-	NodeInfo* maxProbabilityNode = 0;
-
-	if (collectProbability)
-		maxProbabilityNode = new NodeInfo();
+	NodeInfo maxProbabilityNode;
 
 	std::stack<KEY_TYPE> path;
 	KEY_TYPE parent = ROOT_INDEX;
@@ -80,19 +78,23 @@ void CTW::add(SIGNAL_TYPE signal, size_t action)
 		{
 			path.push(index);
 			parent = index;
-			if ( maxProbabilityNode != 0 && tree[index]->getMaxP() > maxProbabilityNode->P )
+			if ( tree[index]->getMaxP() > maxProbabilityNode.P )
 			{
-				maxProbabilityNode->P = tree[index]->getMaxP();
-				maxProbabilityNode->depth = depth;
-				maxProbabilityNode->key = index;
+				maxProbabilityNode.P = tree[index]->getMaxP();
+				maxProbabilityNode.depth = depth;
+				maxProbabilityNode.key = index;
 			}
 
 		}
 	}
 
-	if ( maxProbabilityNode != 0)
+	if ( collector != 0 && maxProbabilityNode.key != NULL_KEY)
 	{
-		collector.push_back(maxProbabilityNode);
+		int ctw_id = 1; // TODO
+		TreeNode *treeNode = tree[maxProbabilityNode.key];
+		const double P[3] = {treeNode->getRealP(NO_ACTION), treeNode->getRealP(BUY), treeNode->getRealP(SELL)};
+		const char* datetime = "2011-10-01 09:54";
+		collector->add(ctw_id, datetime, P, maxProbabilityNode.depth);
 	}
 
 	context.add(signal);
@@ -106,22 +108,6 @@ void CTW::add(SIGNAL_TYPE signal, size_t action)
 		double Pw = 0;//calcChildrenPw(index, action);
 		tree[index]->update(action, Pw);
 	}
-}
-
-void CTW::dumpCollector()
-{
-	std::ofstream myfile;
-	myfile.open ("collector.csv");
-	myfile << "NA,BUY,SELL,Depth\n";
-	BOOST_FOREACH( NodeInfo* node, collector)
-	{
-		TreeNode *treeNode = tree[node->key];
-		// depth,
-		myfile << treeNode->getRealP(NO_ACTION) << ","
-				<< treeNode->getRealP(BUY) << "," << treeNode->getRealP(SELL) << "," << node->depth << std::endl;
-
-	}
-	myfile.close();
 }
 
 double CTW::calcChildrenPw(KEY_TYPE parent, size_t action)
