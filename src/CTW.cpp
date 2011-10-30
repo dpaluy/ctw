@@ -48,7 +48,7 @@ CTW::~CTW()
 
 // signal - context
 // action - DO Nothing, BUY, SELL (see also COUNTER_ENUM)
-void CTW::add(SIGNAL_TYPE signal, size_t action)
+void CTW::add(SIGNAL_TYPE signal, size_t action, const char* timestamp, int ctw_id)
 {
 	if (signal >= NUMBER_OF_CHILDREN)
 	{
@@ -90,11 +90,9 @@ void CTW::add(SIGNAL_TYPE signal, size_t action)
 
 	if ( collector != 0 && maxProbabilityNode.key != NULL_KEY)
 	{
-		int ctw_id = 1; // TODO
 		TreeNode *treeNode = tree[maxProbabilityNode.key];
 		const double P[3] = {treeNode->getRealP(NO_ACTION), treeNode->getRealP(BUY), treeNode->getRealP(SELL)};
-		const char* datetime = "2011-10-01 09:54";
-		collector->add(ctw_id, datetime, P, maxProbabilityNode.depth);
+		collector->add(ctw_id, timestamp, P, maxProbabilityNode.depth);
 	}
 
 	context.add(signal);

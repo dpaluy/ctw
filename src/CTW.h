@@ -34,7 +34,7 @@ public:
 	CTW(ICollector* , const Context& , unsigned int, int = 300);
 	virtual ~CTW();
 
-	void add(SIGNAL_TYPE , size_t );
+	void add(SIGNAL_TYPE , size_t , const char* , int);
 
 	void toXML(std::string filename);
 };
