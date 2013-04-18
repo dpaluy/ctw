@@ -1,3 +1,5 @@
 Debug
 .svn
 .settings
+.project
+.cproject
